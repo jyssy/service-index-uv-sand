@@ -1,13 +1,18 @@
 # Cloned production Django app - do not commit
 Operations_ServiceIndex_Django/
 
+# Local dev configuration - contains passwords
+*.conf.json
+serviceindex-dev.log
+
 # Database dumps and backups
 *.dump
-*.dump.*.gz
+*.dump.*
 *.sql
 *.sql.gz
 *.pgdump
 *.pgdump.gz
+django.serviceindex*.dump.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
