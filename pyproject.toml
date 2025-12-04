@@ -1,0 +1,19 @@
+[project]
+name = "serviceindex"
+version = "0.1.0"
+description = "Service Index Development Environment with uv"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "django>=5.2,<5.3",
+    "requests",
+    "djangorestframework",
+    "gunicorn>=23.0,<24",
+    "django-bootstrap5>=25.0,<26",
+    "django-allauth[socialaccount]>=65.0,<66",
+    "psycopg2-binary",
+    "access-django-user-admin==1.4.6"
+]
+
+[dependency-groups]
+dev = []

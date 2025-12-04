@@ -1,3 +1,14 @@
+# Cloned production Django app - do not commit
+Operations_ServiceIndex_Django/
+
+# Database dumps and backups
+*.dump
+*.dump.*.gz
+*.sql
+*.sql.gz
+*.pgdump
+*.pgdump.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
