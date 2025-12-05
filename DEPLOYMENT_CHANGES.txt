@@ -1,0 +1,208 @@
+================================================================================
+SERVICE INDEX - DEPLOYMENT CHANGES FOR DJANGO 5.2 + ALLAUTH 65.x + SCHEMA FIX
+================================================================================
+Date: December 5, 2025
+
+SUMMARY:
+--------
+1. Fix django-allauth 65.x compatibility (required for CILogon SSO)
+2. Fix signals.py import for allauth 65.x
+3. Move Django metadata tables from public schema to serviceindex schema
+4. Update Django search_path configuration
+
+================================================================================
+CODE CHANGES REQUIRED
+================================================================================
+
+FILE: Operations_ServiceIndex_Django/services/signals.py
+--------------------------------------------------------
+Line 6 - Update import statement:
+
+OLD:
+    from allauth.account.utils import sync_user_email_addresses, setup_user_email
+
+NEW:
+    from allauth.account.utils import setup_user_email
+
+REASON: sync_user_email_addresses was imported but NEVER USED anywhere in the code.
+        It was removed in allauth 65.x, so we simply remove it from the import.
+        setup_user_email IS used on line 58 in connect_existing_user() - keep it!
+
+
+FILE: Operations_ServiceIndex_Django/Operations_ServiceIndex_Django/settings.py
+--------------------------------------------------------------------------------
+
+CHANGE 1 - Line 97 (in MIDDLEWARE section):
+Uncomment the AccountMiddleware line:
+
+OLD:
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'allauth.account.middleware.AccountMiddleware',
+]
+
+NEW:
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+]
+
+REASON: Required for django-allauth 65.x (including CILogon SSO)
+
+
+CHANGE 2 - Line 113 (CSRF_TRUSTED_ORIGINS):
+Add localhost for development testing:
+
+OLD:
+CSRF_TRUSTED_ORIGINS = []
+
+NEW:
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+
+REASON: Development server CSRF protection (remove for production or adjust)
+
+
+CHANGE 3 - Line 172 (in DATABASES['default']['OPTIONS']):
+Update search_path to use serviceindex schema:
+
+OLD:
+            'options': '-c search_path=django,public'
+
+NEW:
+            'options': '-c search_path=serviceindex,public'
+
+REASON: Django metadata tables moved from public to serviceindex schema
+
+
+FILE: Operations_ServiceIndex_Django/services/views.py
+--------------------------------------------------------
+NO CHANGES NEEDED
+
+Note: @login_required and @user_passes_test decorators were ALREADY commented
+out in production code. No modifications were made to this file.
+
+
+================================================================================
+DATABASE MIGRATION REQUIRED
+================================================================================
+
+FILE: migrate_schemas.sql (already created in wrapper repo)
+------------------------------------------------------------
+
+Run this SQL script on the target database to move Django metadata tables
+from the public schema to the serviceindex schema.
+
+Tables to be moved (17 total):
+- django_migrations
+- django_content_type
+- django_admin_log
+- django_session
+- auth_permission
+- auth_group
+- auth_group_permissions
+- auth_user
+- auth_user_groups
+- auth_user_user_permissions
+- account_emailaddress
+- account_emailconfirmation
+- socialaccount_socialapp
+- socialaccount_socialapp_sites
+- socialaccount_socialaccount
+- socialaccount_socialtoken
+- django_site
+
+DEPLOYMENT STEPS:
+1. Backup the database before running migration
+2. Execute: psql -h <host> -U <user> -d <database> -f migrate_schemas.sql
+3. Verify with: 
+   SELECT schemaname, tablename FROM pg_tables 
+   WHERE schemaname IN ('public', 'serviceindex') 
+   ORDER BY schemaname, tablename;
+
+Expected result: 
+- 0 tables in public schema
+- 30 tables in serviceindex schema (17 Django + 13 application tables)
+
+
+================================================================================
+TESTING CHECKLIST
+================================================================================
+
+After deployment, verify:
+
+□ Django server starts without errors
+□ CILogon SSO login works correctly
+□ User authentication and sessions work
+□ Service list page loads
+□ Service create/edit functionality works
+□ Admin interface accessible
+□ All database queries succeed
+□ No errors in application logs
+
+Database verification queries:
+SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'public';  -- Should be 0
+SELECT COUNT(*) FROM pg_tables WHERE schemaname = 'serviceindex';  -- Should be 30
+
+
+================================================================================
+ROLLBACK PLAN (if needed)
+================================================================================
+
+CODE ROLLBACK:
+1. Revert settings.py line 97 (comment out AccountMiddleware)
+2. Revert settings.py line 172 (change back to search_path=django,public)
+3. Revert signals.py line 6 (change back to sync_user_email_addresses import)
+
+DATABASE ROLLBACK:
+Run this SQL to move tables back to public schema:
+
+BEGIN;
+-- List all tables and move back to public
+ALTER TABLE IF EXISTS serviceindex.django_migrations SET SCHEMA public;
+ALTER TABLE IF EXISTS serviceindex.django_content_type SET SCHEMA public;
+-- ... (repeat for all 17 tables)
+COMMIT;
+
+
+================================================================================
+ENVIRONMENT-SPECIFIC NOTES
+================================================================================
+
+DEVELOPMENT (Django 5.1):
+- Test all changes here first
+- Verify CILogon SSO works
+- Validate schema migration
+
+BETA/PRODUCTION:
+- Ensure CSRF_TRUSTED_ORIGINS is set to actual domain (not localhost)
+- Coordinate deployment window for database migration
+- Keep database backup for 7+ days after deployment
+
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+Python packages (via requirements.txt or pip):
+- django>=5.2,<5.3
+- django-allauth[socialaccount]>=65.0,<66
+
+These should already be in production requirements.
+
+
+================================================================================
+REFERENCES
+================================================================================
+
+Django-allauth 65.x documentation:
+- Installation: https://docs.allauth.org/en/latest/installation/quickstart.html
+- Configuration: https://docs.allauth.org/en/latest/account/configuration.html
+- Release notes: https://docs.allauth.org/en/latest/release-notes/2024.html
+
+Django-allauth AccountMiddleware requirement:
+https://docs.allauth.org/en/latest/installation/quickstart.html
+(See MIDDLEWARE section - "Add the account middleware")
+
+================================================================================
+END OF DEPLOYMENT CHANGES
+================================================================================

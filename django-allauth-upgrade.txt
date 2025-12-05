@@ -1,0 +1,51 @@
+DJANGO-ALLAUTH 0.51.x → 65.x UPGRADE STEPS
+==========================================
+
+1. EDIT Pipfile
+   Change:
+   django-allauth = "==0.51.*"
+   
+   To:
+   django-allauth = {version = ">=65.0,<66", extras = ["socialaccount"]}
+
+2. EDIT services/signals.py (line 7)
+   Change:
+   from allauth.account.utils import sync_user_email_addresses, setup_user_email
+   
+   To:
+   from allauth.account.utils import setup_user_email
+
+3. EDIT Operations_ServiceIndex_Django/settings.py (line 97)
+   Change:
+   # 'allauth.account.middleware.AccountMiddleware',
+   
+   To:
+   'allauth.account.middleware.AccountMiddleware',
+
+4. INSTALL packages
+   rm Pipfile.lock
+   pipenv lock
+   pipenv sync
+
+5. RUN migrations
+   bash /soft/serviceindex-1.0/sbin/manage.prod.sh migrate
+
+6. TEST before restart
+   bash /soft/serviceindex-1.0/sbin/manage.prod.sh check
+
+7. RESTART service
+   sudo systemctl restart serviceindex.service
+   sudo systemctl status serviceindex.server
+
+8. VERIFY
+   - Web interface loads
+   - CILogon SSO login works
+   - Check error logs
+
+ROLLBACK (if needed)
+====================
+1. Revert Pipfile to django-allauth = "==0.51.*"
+2. Revert signals.py import (add sync_user_email_addresses back)
+3. Revert settings.py (comment out AccountMiddleware)
+4. rm Pipfile.lock && pipenv lock && pipenv sync
+5. sudo systemctl restart serviceindex
