@@ -1,5 +1,7 @@
-# Cloned production Django app - do not commit
+# Cloned Python apps - do not commit
 Operations_ServiceIndex_Django/
+access_django_user_admin/
+Operations_ACCESS_Django_User_Admin/
 
 # Local dev configuration - contains passwords
 *.conf.json
