@@ -4,11 +4,11 @@ requires-python = "==3.12.*"
 
 [[package]]
 name = "access-django-user-admin"
-version = "1.4.6"
+version = "1.4.8"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/04/56/4997ed363a5e2c6313f6c45d3eb8910274dd678d7cca884fb437c8898dd0/access_django_user_admin-1.4.6.tar.gz", hash = "sha256:8593aa51217caba9ee5e99d1763508e010744e3f27ff7018fe515f9b266ddd10", size = 127909, upload-time = "2025-10-23T18:49:25.189Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/ff/fde0480b77f5efb70af0014b623942f78b79e7bd67db94c6618656ffddff/access_django_user_admin-1.4.8.tar.gz", hash = "sha256:4ad03cea49d460238b3378d861907a6746f908eb8c1e84a82eda6392ecdbcb7b", size = 127964, upload-time = "2025-12-09T18:21:37.895Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/96/dbda034656a2fbdf6a1ab7664102ee0b8efc964844e7780d8a0581995588/access_django_user_admin-1.4.6-py3-none-any.whl", hash = "sha256:f2855fc93dc80fbec9549b21a94ff7e7290fedd12a2052b81f822f38b5979876", size = 128285, upload-time = "2025-10-23T18:49:24Z" },
+    { url = "https://files.pythonhosted.org/packages/21/2b/2faae800e82131730971433fd7a9477d5f17167aaead97cec6cb5101c34e/access_django_user_admin-1.4.8-py3-none-any.whl", hash = "sha256:478f9076e36151a67a0e084fac2bd71dea79899fbef48d85177d5d145d4ef352", size = 128284, upload-time = "2025-12-09T18:21:36.717Z" },
 ]
 
 [[package]]
@@ -289,7 +289,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "access-django-user-admin", specifier = "==1.4.6" },
+    { name = "access-django-user-admin", specifier = "==1.4.8" },
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "django-allauth", extras = ["socialaccount"], specifier = ">=65.0,<66" },
     { name = "django-bootstrap5", specifier = ">=25.0,<26" },

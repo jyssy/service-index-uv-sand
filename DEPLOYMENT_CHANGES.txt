@@ -78,7 +78,7 @@ FILE: Operations_ServiceIndex_Django/services/views.py
 --------------------------------------------------------
 NO CHANGES NEEDED
 
-Note: @login_required and @user_passes_test decorators were ALREADY commented
+Note: #@login_required and #@login_required decorators were ALREADY commented
 out in production code. No modifications were made to this file.
 
 
