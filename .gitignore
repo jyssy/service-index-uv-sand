@@ -161,6 +161,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+API_KEY
+.DS_Store
 
 # Spyder project settings
 .spyderproject

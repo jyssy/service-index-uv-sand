@@ -35,7 +35,7 @@ DJANGO-ALLAUTH 0.51.x → 65.x UPGRADE STEPS
 
 7. RESTART service
    sudo systemctl restart serviceindex.service
-   sudo systemctl status serviceindex.server
+   sudo systemctl status serviceindex.service
 
 8. VERIFY
    - Web interface loads
