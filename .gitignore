@@ -159,10 +159,12 @@ celerybeat.pid
 env/
 venv/
 ENV/
-env.bak/
+env.bak.gitignore
 venv.bak/
 API_KEY
 .DS_Store
+bandit-report.json
+dev_fun_repos/
 
 # Spyder project settings
 .spyderproject
