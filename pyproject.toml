@@ -12,7 +12,7 @@ dependencies = [
     "django-bootstrap5>=25.0,<26",
     "django-allauth[socialaccount]>=65.0,<66",
     "psycopg2-binary"
-#    "access-django-user-admin==1.4.8"  # commented out for local devving
+#    "access-django-user-admin==1.6.3"  # commented out for local devving
 ]
 
 [dependency-groups]
